@@ -9,8 +9,9 @@ def before_all(context):
     context.browser = playwright.firefox.launch(headless=False)
     context.page = context.browser.new_page()
 
-def after_scenario(context, scenario):
 
+# This will be executed after each scenario. Currently we are using it to take screenshots and attach it to the report
+def after_scenario(context, scenario):
     def embed_data(mime_type, data, caption):
         # If data is empty we want to finish html tag with at least one character
         non_empty_data = " " if not data else data
@@ -18,7 +19,7 @@ def after_scenario(context, scenario):
             if "html" in formatter.name:
                 formatter.embed(mime_type=mime_type, data=non_empty_data, caption=caption)
                 return
-    context.embed = embed_data
 
+    context.embed = embed_data
     image_encoded = context.page.screenshot()
     context.embed(mime_type="image/png", data=base64.b64encode(image_encoded).decode(), caption="Screenshot")
