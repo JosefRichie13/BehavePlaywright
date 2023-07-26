@@ -35,7 +35,7 @@ class HelperMethods:
 
         i = 0
         while (i < len(Prices)):
-            RawPrices.append(Prices[i].text)
+            RawPrices.append(Prices[i])
             i = i + 1
 
         StringPrices = [sub[1:] for sub in RawPrices]
@@ -50,7 +50,7 @@ class HelperMethods:
 
         i = 0
         while (i < len(Names)):
-            RawNames.append(Names[i].text)
+            RawNames.append(Names[i])
             i = i + 1
 
         return RawNames
