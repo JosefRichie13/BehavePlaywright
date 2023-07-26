@@ -1,7 +1,10 @@
+import time
+
 from behave import *
 from assertpy import assert_that
 from features.helpers.selectors import Selectors
 from features.helpers.pythonmethods import HelperMethods
+
 
 @when('I note all the "{Filter}" in the homepage')
 def NoteAllThePrices(context, Filter):
@@ -24,6 +27,7 @@ def NoteAllThePrices(context, Filter):
 @when('I select the "{SortOption}" sort option')
 def SelectTheSortOption(context, SortOption):
     context.page.locator(Selectors.SortOption).select_option(SortOption)
+
 
 # This method will confirm whether a sort is correct in the UI or not
 # It first will get all the sorted prices/names from the UI and puts them in a list (List A) after formatting them
@@ -79,3 +83,31 @@ def SortIsCorrect(context, SortOption):
 
         case _:
             print(SortOption + " not supported")
+
+
+# This method adds a product to the cart. It gets all the names of the product and calls a helper method which puts the
+# names in a list. Then gets the index of the product from the feature file and then clicks on it.
+@when('I add "{Product}" to the cart')
+def SelectTheProduct(context, Product):
+    Names = context.page.locator(Selectors.ProductList)
+    NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
+
+    Index = NamesFromUI.index(Product)
+    context.page.locator(Selectors.AddToCartButton).nth(Index).click()
+
+
+# This method confirms the number of products in the cart
+@when('I confirm that the cart has "{Number}" products')
+def ConfirmNumberInCart(context, Number):
+    assert_that(context.page.text_content(Selectors.CartNumber)).is_equal_to(Number)
+
+
+# This method removes a product from the cart. It gets all the names of the product and calls a helper method which
+# puts the names in a list. Then gets the index of the product from the feature file and then clicks on it.
+@when('I remove "{Product}" from the cart')
+def RemoveTheProduct(context, Product):
+    Names = context.page.locator(Selectors.ProductList)
+    NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
+
+    Index = NamesFromUI.index(Product)
+    context.page.locator(Selectors.RemoveFromCartButton).nth(Index).click()
