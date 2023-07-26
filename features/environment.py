@@ -10,7 +10,7 @@ def before_all(context):
     context.page = context.browser.new_page()
 
 
-# This will be executed after each scenario. Currently we are using it to take screenshots and attach it to the report
+# This will be executed after each scenario. Currently we are using it to take screenshots and attach it to the HTML report
 def after_scenario(context, scenario):
     def embed_data(mime_type, data, caption):
         # If data is empty we want to finish html tag with at least one character
