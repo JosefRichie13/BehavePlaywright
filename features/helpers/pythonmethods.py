@@ -1,7 +1,8 @@
 # This file will contain all the helper methods which are related to python
 
 import json
-
+from features.helpers.configs import Configs
+from features.helpers.selectors import Selectors
 
 class HelperMethods:
 
@@ -58,3 +59,14 @@ class HelperMethods:
     @staticmethod
     def ClearTempData():
         open("features/helpers/tempdata.json", 'w').close()
+
+    @staticmethod
+    # This method will reset the app to the original state.
+    def ResetAppState(context):
+        context.page.goto(Configs.MainURL)
+        context.page.locator(Selectors.UserName).type(Configs.ValidUser)
+        context.page.locator(Selectors.Password).type(Configs.Password)
+        context.page.locator(Selectors.LoginButton).click()
+        context.page.locator(Selectors.Menu).click()
+        context.page.locator(Selectors.ResetApp).click()
+        context.page.locator(Selectors.CloseMenu).click()

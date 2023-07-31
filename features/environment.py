@@ -1,14 +1,19 @@
 import base64
 
 from playwright.sync_api import sync_playwright
+from features.helpers.pythonmethods import HelperMethods
 
 
 def before_all(context):
     # This is the before, the browser is initialized here. Chromimum, Firefox and Webkit are supported
     playwright = sync_playwright().start()
-    context.browser = playwright.firefox.launch(headless=False)
+    context.browser = playwright.webkit.launch(headless=False)
     context.page = context.browser.new_page()
 
+# This is the before tag method. This will be executed before the specified tag is run
+def before_tag(context, tag):
+    if tag == "cleanappstate":
+        HelperMethods.ResetAppState(context)
 
 # This will be executed after each scenario. Currently we are using it to take screenshots and attach it to the HTML report
 def after_scenario(context, scenario):
