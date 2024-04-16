@@ -3,7 +3,6 @@
 
 Feature: Product Checkout Scenarios
 
-  @cleanappstate
   Scenario: I can buy a product and checkout
     Given I open the web page
     When I login as a "standard" user
