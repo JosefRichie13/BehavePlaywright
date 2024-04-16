@@ -2,20 +2,20 @@ import time
 
 from behave import *
 from assertpy import assert_that
-from features.helpers.selectors import Selectors
 from features.helpers.pythonmethods import HelperMethods
-
+from features.helpers.driver import driverMethods
+from features.helpers.selectors import Selectors
 
 @when('I note all the "{Filter}" in the homepage')
 def NoteAllThePrices(context, Filter):
     match Filter:
         case "prices":
-            Prices = context.page.locator(Selectors.PricesList)
+            Prices = driverMethods.GetAlistOfElements(context, Selectors.PricesList)
             FormattedPrices = HelperMethods.ConvertPricesToFloat(Prices.all_text_contents())
             PricesInDataFile = {"PriceList": FormattedPrices}
             HelperMethods.WriteToFile(PricesInDataFile, "features/helpers/tempdata.json")
         case "names":
-            Names = context.page.locator(Selectors.ProductList)
+            Names = driverMethods.GetAlistOfElements(context, Selectors.ProductList)
             FormattedNames = HelperMethods.FormatNames(Names.all_text_contents())
             NamesInDataFile = {"NamesList": FormattedNames}
             HelperMethods.WriteToFile(NamesInDataFile, "features/helpers/tempdata.json")
@@ -26,7 +26,7 @@ def NoteAllThePrices(context, Filter):
 # This method will select a sort option from a dropdown
 @when('I select the "{SortOption}" sort option')
 def SelectTheSortOption(context, SortOption):
-    context.page.locator(Selectors.SortOption).select_option(SortOption)
+    driverMethods.SelectFromDropdownUsingText(context, Selectors.SortOption, SortOption)
 
 
 # This method will confirm whether a sort is correct in the UI or not
@@ -39,7 +39,7 @@ def SortIsCorrect(context, SortOption):
     match SortOption:
         case "Price (high to low)":
             # Get sorted prices from UI and keep them in FormattedPricesInUI after formatting
-            Prices = context.page.locator(Selectors.PricesList)
+            Prices = driverMethods.GetAlistOfElements(context, Selectors.PricesList)
             FormattedPricesInUI = HelperMethods.ConvertPricesToFloat(Prices.all_text_contents())
 
             # Get unsorted prices from tempdata and then sort them using sorted()
@@ -52,7 +52,7 @@ def SortIsCorrect(context, SortOption):
             assert_that(FormattedPricesInUI).is_equal_to(FormattedPricesAfterSort)
 
         case "Price (low to high)":
-            Prices = context.page.locator(Selectors.PricesList)
+            Prices = driverMethods.GetAlistOfElements(context, Selectors.PricesList)
             FormattedPricesInUI = HelperMethods.ConvertPricesToFloat(Prices.all_text_contents())
 
             PricesFromDataFile = HelperMethods.ReadFromFile("features/helpers/tempdata.json")
@@ -62,7 +62,7 @@ def SortIsCorrect(context, SortOption):
             assert_that(FormattedPricesInUI).is_equal_to(FormattedPricesAfterSort)
 
         case "Name (Z to A)":
-            Names = context.page.locator(Selectors.ProductList)
+            Names = driverMethods.GetAlistOfElements(context, Selectors.ProductList)
             NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
 
             NamesFromDataFile = HelperMethods.ReadFromFile("features/helpers/tempdata.json")
@@ -72,7 +72,7 @@ def SortIsCorrect(context, SortOption):
             assert_that(NamesFromUI).is_equal_to(NamesFromDataFileAfterSort)
 
         case "Name (A to Z)":
-            Names = context.page.locator(Selectors.ProductList)
+            Names = driverMethods.GetAlistOfElements(context, Selectors.ProductList)
             NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
 
             NamesFromDataFile = HelperMethods.ReadFromFile("features/helpers/tempdata.json")
@@ -89,25 +89,25 @@ def SortIsCorrect(context, SortOption):
 # names in a list. Then gets the index of the product from the feature file and then clicks on it.
 @when('I add "{Product}" to the cart')
 def SelectTheProduct(context, Product):
-    Names = context.page.locator(Selectors.ProductList)
+    Names = driverMethods.GetAlistOfElements(context, Selectors.ProductList)
     NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
 
     Index = NamesFromUI.index(Product)
-    context.page.locator(Selectors.AddToCartButton).nth(Index).click()
+    driverMethods.ClickOnNthElement(context, Selectors.AddToCartButton, Index)
 
 
 # This method confirms the number of products in the cart
 @when('I confirm that the cart has "{Number}" products')
 def ConfirmNumberInCart(context, Number):
-    assert_that(context.page.text_content(Selectors.CartNumber)).is_equal_to(Number)
+    assert_that(driverMethods.GetTextFromElement(context, Selectors.CartNumber)).is_equal_to(Number)
 
 
 # This method removes a product from the cart. It gets all the names of the product and calls a helper method which
 # puts the names in a list. Then gets the index of the product from the feature file and then clicks on it.
 @when('I remove "{Product}" from the cart')
 def RemoveTheProduct(context, Product):
-    Names = context.page.locator(Selectors.ProductList)
+    Names = driverMethods.GetAlistOfElements(context, Selectors.ProductList)
     NamesFromUI = HelperMethods.FormatNames(Names.all_text_contents())
 
     Index = NamesFromUI.index(Product)
-    context.page.locator(Selectors.RemoveFromCartButton).nth(Index).click()
+    driverMethods.ClickOnNthElement(context, Selectors.RemoveFromCartButton, Index)

@@ -14,3 +14,14 @@ class driverMethods:
 
     def ElementVisibleOrNot(context, selectorElement):
         return context.page.locator(selectorElement).is_visible()
+
+    def GetAlistOfElements(context, selectorElement):
+        listOfElements = context.page.locator(selectorElement)
+        return listOfElements
+
+    def SelectFromDropdownUsingText(context, selectorElement, selectOptionInText):
+        context.page.locator(selectorElement).select_option(selectOptionInText)
+
+    def ClickOnNthElement(context, selectorElement, nthOrder):
+        context.page.locator(selectorElement).nth(nthOrder).click()
+
