@@ -10,13 +10,11 @@ def before_all(context):
     context.browser = playwright.webkit.launch(headless=False)
     context.page = context.browser.new_page()
 
-# This is the before tag method. This will be executed before the specified tag is run
-def before_tag(context, tag):
-    if tag == "cleanappstate":
-        HelperMethods.ResetAppState(context)
-
 # This will be executed after each scenario. Currently we are using it to take screenshots and attach it to the HTML report
 def after_scenario(context, scenario):
+
+    HelperMethods.ResetAppState(context)
+
     def embed_data(mime_type, data, caption):
         # If data is empty we want to finish html tag with at least one character
         non_empty_data = " " if not data else data
